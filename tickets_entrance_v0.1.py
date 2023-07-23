@@ -1,13 +1,15 @@
+# Version: 0.2 (2021-05-24) still in progress
 # This program asks the user for the height of a person in cm and determines 
 # if he/she can ride the rollercoaster based on the height.
 
 # Define the class 'Person' with the following attributes:
 class Person:
-    def __init__(self, name, last_name, age, height):
+    def __init__(self, name, last_name, age, height, photo):
         self.name = name
         self.last_name = last_name
         self.age = age
         self.height = height
+        self.photo = photo
 
     # Method to determine the ticket price based on the age of the person   
     def get_ticket_price(self):
@@ -19,6 +21,13 @@ class Person:
             self.ticket_price = 15
         else:
             self.ticket_price = None
+        return self.ticket_price
+
+    def get_photo(self):
+        if self.photo == "\nThey have bought the photography service.":
+            self.ticket_price += 3
+        elif self.photo == "\nThey have not bought the photography service.":
+            self.ticket_price = self.ticket_price
         return self.ticket_price
 
     # Method to print the information of the person
@@ -60,13 +69,28 @@ while True:
             except ValueError:
                 print("\nThat's not a valid option! Please try again.")
 
-        # Create a new person with the provided information
-        person = Person(name, last_name, age, height)
+        # ask for photography service
 
-        # Determine and print the person's ticket price
+        while True:                             
+            photo = input("\nWould they like to buy the photography service? Yes or no?: ")
+            if photo.lower() == 'yes':
+                photo = ("\nThey have bought the photography service.")
+                break
+            elif photo.lower() == 'no':
+                photo = ("\nThey have not bought the photography service.")
+                break
+            else:
+                print("\nThat's not a valid option! Please try again.")
+
+        # Create a new person with the provided information
+        person = Person(name, last_name, age, height, photo)
+
+        # Determine and print the person's ticket price 
         ticket_price = person.get_ticket_price()
+        photo = person.get_photo()
+
         if ticket_price is not None:
-            print(f"\nThey have to pay ${ticket_price} for the ticket.")
+            print(f"\nThey have to pay ${photo} for the ticket.")
         else:
             print("\nTheir age is not valid, please try again.")
             continue # Go back to the beginning of the loop
@@ -82,34 +106,69 @@ while True:
     people.append(person)
 
     # Ask if the user wants to enter another person
-    another = input("\nWould you like to enter another person? Yes or no?: ")
-    if another.lower() != 'yes':
-        break
+    
+    while True:
+        another = input("\nWould you like to enter another person? Yes or no?: ")
+        if another.lower() in ['yes', 'no']: # Check if the input is valid
+            break
+        else:
+            print("\nThat's not a valid option! Please try again.")
 
-while True:
-    try:
+    if another.lower() == 'yes':
+        continue
+    #elif another.lower() == 'no':
+    #   break
+
+    while True:
         ask_1 = input("\nWould you like to see the list of people? Or do you want to see the information of a specific person? (list or information): ")
-        break
-    except ValueError:
-        print("\nThat's not a valid option! Please try again.")
+        if ask_1.lower() in ['list', 'information']:
+            break
+        else:
+            print("\nThat's not a valid option! Please try again.")
 
-# Print the list of people names if the user wants to see it
-if 'information' in ask_1.lower():
-    print('These are the names of the people in the list: ')
-    for person in people:
-        print(person.name)
+    # Print the list of people names if the user wants to see it
+    if 'information' in ask_1.lower():
+        print('\nThese are the names of the people in the list: ')
+        for person in people:
+            print(person.name)
 
-    # Ask for the name of the person the user wants to see the information of
-    name_given = input("\nPlease enter the name of the person you want to see the information of: ")
-    found_person = find_person_by_name(name_given, people)
-    if found_person is not None:
-        print(found_person)
+        while True:
+            # Ask for the name of the person the user wants to see the information of
+            name_given = input("\nPlease enter the name of the person you want to see the information of: ")
+            found_person = find_person_by_name(name_given, people)
+            if found_person is not None:
+                print(found_person)
+                print("\nThanks for using this program!")
+                break # if the person is found, print the information and break the loop
+            else:
+                print("\nThat person is not in the list.")
+                # If the person is not found, ask the user if they want to try again
+                while True:
+                    try_again = input("\nWould you like to try again? Yes or no?: ")
+                    if try_again.lower() in ['yes', 'no']:
+                        break
+                    else:
+                        print("\nThat's not a valid option! Please try again.")
+                if try_again.lower() == 'yes':
+                    continue
+                elif try_again.lower() == 'no':
+                    break
+    # ask if the user wants to enter another person and continue the loop if they do
+    while True:
+        another_2 = input("\nWould you like to enter another person? Yes or no?: ")
+        if another_2.lower() in ['yes', 'no']: # Check if the input is valid
+            break
+        else:
+            print("\nThat's not a valid option! Please try again.")
+
+    if another_2.lower() == 'yes':
+        continue
+    elif another_2.lower() == 'no':
         print("\nThanks for using this program!")
-    else:
-        print("\nThat person is not in the list.")
+        break
 
-elif 'list' in ask_1.lower():
-    print("\nThese are the people in the list: ")
-    for person in people:
-        print(person)
-    print("\nThanks for using this program!")
+    elif 'list' in ask_1.lower():
+        print("\nThese are the people in the list: ")
+        for person in people:
+            print(person)
+        print("\nThanks for using this program!")
